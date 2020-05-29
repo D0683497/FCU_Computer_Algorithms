@@ -7,9 +7,7 @@ namespace HW01
     {
         public static List<string> SortList = new List<string> { "Bubble Sort", "Selection Sort", "Insertion Sort", "Quick Sort", "Heap Sort" };
 
-        // public static List<int> SeedList = new List<int> { 50000, 100000, 150000, 200000, 250000, 300000 };
-
-        public static List<int> SeedList = new List<int> { 50, 100, 150, 200, 250, 300 };
+        public static List<int> SeedList = new List<int> { 50000, 100000, 150000, 200000, 250000, 300000 };
 
         public static int Round = 25;
 
