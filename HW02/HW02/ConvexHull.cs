@@ -4,6 +4,7 @@ using System.Linq;
 
 namespace HW02
 {
+    // http://www.csie.ntnu.edu.tw/~u91029/ConvexHull.html#4
     public sealed class ConvexHull
     {
         // Returns a new list of points representing the convex hull of
@@ -12,7 +13,7 @@ namespace HW02
         public static IList<Point> MakeHull(IList<Point> points)
         {
             List<Point> newPoints = new List<Point>(points);
-            // 排序(小 到 大)
+            // X 小 排到到 大，若相同看 Y (小到大)
             newPoints.Sort();
             return MakeHullPresorted(newPoints);
         }
@@ -28,6 +29,7 @@ namespace HW02
             // as per the mathematical convention, instead of "down" as per the computer
             // graphics convention. This doesn't affect the correctness of the result.
 
+            // 找逆時鐘的
             List<Point> upperHull = new List<Point>();
             foreach (Point p in points)
             {
@@ -35,6 +37,8 @@ namespace HW02
                 {
                     Point q = upperHull[upperHull.Count - 1];
                     Point r = upperHull[upperHull.Count - 2];
+                    // p 是目前的點
+                    // 向量 rq 內積 向量 rp，大於零表示從 rq 到 rp 為逆時針旋轉，去掉
                     if ((q.X - r.X) * (p.Y - r.Y) >= (q.Y - r.Y) * (p.X - r.X))
                     {
                         upperHull.RemoveAt(upperHull.Count - 1);
@@ -46,6 +50,7 @@ namespace HW02
                 }
                 upperHull.Add(p);
             }
+            // 去掉最後一點，lowerHull 會從這點開始
             upperHull.RemoveAt(upperHull.Count - 1);
 
             IList<Point> lowerHull = new List<Point>();
@@ -56,6 +61,8 @@ namespace HW02
                 {
                     Point q = lowerHull[lowerHull.Count - 1];
                     Point r = lowerHull[lowerHull.Count - 2];
+                    // p 是目前的點
+                    // 向量 rq 內積 向量 rp，大於零表示從 rq 到 rp 為逆時針旋轉，去掉
                     if ((q.X - r.X) * (p.Y - r.Y) >= (q.Y - r.Y) * (p.X - r.X))
                     {
                         lowerHull.RemoveAt(lowerHull.Count - 1);
@@ -67,12 +74,15 @@ namespace HW02
                 }
                 lowerHull.Add(p);
             }
+            // 去掉最後一點，也就是原點
             lowerHull.RemoveAt(lowerHull.Count - 1);
 
+            // 合併
             if (!(upperHull.Count == 1 && Enumerable.SequenceEqual(upperHull, lowerHull)))
             {
                 upperHull.AddRange(lowerHull);
             }
+
             return upperHull;
         }
     }
@@ -95,6 +105,10 @@ namespace HW02
             this.Y = y;
         }
 
+        // https://docs.microsoft.com/zh-tw/dotnet/api/system.icomparable.compareto?view=netcore-3.1
+        // 小於零 這個執行個體在排序次序中會在 other 之前。
+        // 大於零 這個執行個體在排序順序中會跟在 other 之後。
+        // 零 這個執行個體在排序次序中的位置和 other 相同。
         public int CompareTo(Point other)
         {
             if (X < other.X)
